@@ -73,7 +73,7 @@ namespace IdentityAuthLesson.Controllers
                 return Unauthorized("Password invalid");
             }
 
-            return Ok("Welcomte the world");
+            return Ok("Welcome to the world");
         }
 
         [HttpGet]
