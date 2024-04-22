@@ -17,14 +17,8 @@ namespace IdentityAuthLesson
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
-
-
-
-
-
             // Add services to the container.
-/*
+
             builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -56,7 +50,7 @@ namespace IdentityAuthLesson
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:SecretKey"]!))
                 };
             });
-            */
+            
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -90,18 +84,16 @@ namespace IdentityAuthLesson
     });
             });
 
-
-
-
+            /*
             builder.Services.AddDbContext<IdentityDbContext>(options => options.UseInMemoryDatabase("IdentityDb"));
             builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
             builder.Services.AddAuthorizationBuilder();
 
+            
             builder.Services.AddIdentityCore<IdentityUser>()
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddApiEndpoints();
-
-
+            */
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -111,9 +103,9 @@ namespace IdentityAuthLesson
                 app.UseSwaggerUI();
             }
             
-            app.MapIdentityApi<IdentityUser>();
-            app.MapGet("welcome", () => "Salom bolajonim")
-                .RequireAuthorization();
+            //app.MapIdentityApi<IdentityUser>();
+            //app.MapGet("welcome", () => "Salom bolajonim")
+            //    .RequireAuthorization();
 
             app.UseHttpsRedirection();
 

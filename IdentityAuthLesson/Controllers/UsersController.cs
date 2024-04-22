@@ -26,9 +26,9 @@ namespace IdentityAuthLesson.Controllers
             _authService = authService;
         }
 
-        //[HttpPost]
+        [HttpPost]
         [AllowAnonymous]
-        private async Task<ActionResult<string>> Register(RegisterDTO registerDto)
+        public async Task<ActionResult<string>> Register(RegisterDTO registerDto)
         {
             if(!ModelState.IsValid)
             {
@@ -62,9 +62,9 @@ namespace IdentityAuthLesson.Controllers
         }
 
 
-        //[HttpPost]
+        [HttpPost]
         [AllowAnonymous]
-        private async Task<ActionResult<AuthDTO>> Login(LoginDTO loginDTO)
+        public async Task<ActionResult<AuthDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
 
@@ -87,18 +87,18 @@ namespace IdentityAuthLesson.Controllers
             return Ok(token);
         }
 
-        //[HttpGet]
+        [HttpGet]
         [Authorize(Roles = "Admin")]
-        private async Task<ActionResult<string>> GetAllUsers()
+        public async Task<ActionResult<string>> GetAllUsers()
         {
             var result = await _userManager.Users.ToListAsync();
 
             return Ok(result);
         }
 
-        //[HttpGet]
+        [HttpGet]
         [Authorize(Roles = "Student")]
-        private async Task<ActionResult<string>> GetAllUsers1()
+        public async Task<ActionResult<string>> GetAllUsers1()
         {
             var result = await _userManager.Users.ToListAsync();
 
