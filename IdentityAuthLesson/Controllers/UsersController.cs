@@ -1,5 +1,7 @@
 ﻿using IdentityAuthLesson.DTOs;
 using IdentityAuthLesson.Models;
+using IdentityAuthLesson.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,19 +12,23 @@ namespace IdentityAuthLesson.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    //[Authorize]
     public class UsersController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IAuthService _authService;
 
-        public UsersController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IAuthService authService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _authService = authService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> Register(RegisterDTO registerDto)
+        //[HttpPost]
+        [AllowAnonymous]
+        private async Task<ActionResult<string>> Register(RegisterDTO registerDto)
         {
             if(!ModelState.IsValid)
             {
@@ -56,8 +62,9 @@ namespace IdentityAuthLesson.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult<string>> Login(LoginDTO loginDTO)
+        //[HttpPost]
+        [AllowAnonymous]
+        private async Task<ActionResult<AuthDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
 
@@ -73,15 +80,38 @@ namespace IdentityAuthLesson.Controllers
                 return Unauthorized("Password invalid");
             }
 
-            return Ok("Welcomte the world");
+            // token kelishi kere
+
+            var token = await _authService.GenerateToken(user);
+
+            return Ok(token);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<string>> GetAllUsers()
+        //[HttpGet]
+        [Authorize(Roles = "Admin")]
+        private async Task<ActionResult<string>> GetAllUsers()
         {
             var result = await _userManager.Users.ToListAsync();
 
             return Ok(result);
+        }
+
+        //[HttpGet]
+        [Authorize(Roles = "Student")]
+        private async Task<ActionResult<string>> GetAllUsers1()
+        {
+            var result = await _userManager.Users.ToListAsync();
+
+            return Ok("Student keldi");
+        }
+
+        [HttpGet]
+        //[Authorize(Roles = "Admin, Student")]
+        public async Task<ActionResult<string>> GetAllUsers2()
+        {
+            var result = await _userManager.Users.ToListAsync();
+
+            return Ok("Admin, Student ishladi");
         }
     }
 }
